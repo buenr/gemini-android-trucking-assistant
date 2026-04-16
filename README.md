@@ -27,26 +27,30 @@ The application is built completely natively in Kotlin using Jetpack Compose and
 *   **`tools/TruckingTools.kt`**: Defines the "skills" the Gemini Copilot has access to. It implements deterministic local tools (simulating backend API calls) to provide real-time trucking logistics data:
     *   `getDriverProfile`: Driver contextual info (location, truck/trailer equipment).
     *   `getLoadStatus`: Active load IDs, stop ETAs, and transit risks.
-    *   `getComplianceAlerts`: HOS hours and DVIR requirements.
-    *   `getRouteRisks`: Weather and traffic data along the current route.
+    *   `getHoursOfServiceClocks`: HOS hours and remaining drive time.
+    *   `getTrafficAndWeather`: Immediate traffic and weather data for the next hour.
     *   `getDispatchInbox`: Critical dispatch exception messages.
     *   `getCompanyFAQs`: SOP documentation (Pet policies, breakdown procedures, etc).
     *   `getPaycheckInfo`: Settled pay and mileage totals.
     *   `findNearestSwiftTerminal`: Nearby Swift yards and internal amenities.
     *   `checkSafetyScore`: Driver telemetry ranking and recent safety events.
     *   `getFuelNetworkRouting`: Approved in-network fuel routing logic.
+    *   `getContacts`: Swift Transportation departments and personnel contact info.
+    *   `getNextLoadDetails`: Details on the next scheduled load (pre-dispatch).
 
 ### What Can You Ask? (Example Prompts)
 
 With the tools implemented above, the driver can naturally ask the copilot questions such as:
 *   **"What am I hauling right now and when is my next stop?"** *(Triggers `getLoadStatus`)*
 *   **"Where is the nearest Swift terminal with a shower and a maintenance shop?"** *(Triggers `findNearestSwiftTerminal`)*
-*   **"How much drive time do I have left on my clock today?"** *(Triggers `getComplianceAlerts`)*
+*   **"How much drive time do I have left on my clock today?"** *(Triggers `getHoursOfServiceClocks`)*
 *   **"How does my safety score look? Did that hard brake yesterday affect my bonus?"** *(Triggers `checkSafetyScore`)*
 *   **"Where should I get fuel next on this route?"** *(Triggers `getFuelNetworkRouting`)*
-*   **"What's the weather and traffic looking like for the next 4 hours?"** *(Triggers `getRouteRisks`)*
+*   **"What's the weather and traffic looking like for the next hour?"** *(Triggers `getTrafficAndWeather`)*
 *   **"Read my unread messages from dispatch."** *(Triggers `getDispatchInbox`)*
 *   **"What is the company policy on having a dog in the truck?"** *(Triggers `getCompanyFAQs`)*
+*   **"How do I reach my driver leader or payroll?"** *(Triggers `getContacts`)*
+*   **"What's my next load after this one?"** *(Triggers `getNextLoadDetails`)*
 
 ## Setup Instructions
 
