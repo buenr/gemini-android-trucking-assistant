@@ -72,6 +72,30 @@ object TruckingTools {
                     type = "object",
                     properties = emptyMap()
                 )
+            ),
+            FunctionDeclaration(
+                name = "findNearestSwiftTerminal",
+                description = "Returns the nearest Swift Transportation terminal or drop yard, including distance and available amenities (showers, shop, wash, parking). Invocation condition: call when the driver asks about where to park, get a truck wash, or find terminal amenities.",
+                parameters = Schema(
+                    type = "object",
+                    properties = emptyMap()
+                )
+            ),
+            FunctionDeclaration(
+                name = "checkInGaugeSafetyScore",
+                description = "Returns the driver's current InGauge safety score, ranking, and recent telemetry events (e.g., hard braking, overspeeding). Invocation condition: call when the driver asks about their driving score, safety record, or bonus standing.",
+                parameters = Schema(
+                    type = "object",
+                    properties = emptyMap()
+                )
+            ),
+            FunctionDeclaration(
+                name = "getFuelNetworkRouting",
+                description = "Returns the next approved in-network fuel stop (e.g., Swift Fuel Network, Pilot/Flying J) based on current location and route. Invocation condition: call when the driver asks where they should get fuel next.",
+                parameters = Schema(
+                    type = "object",
+                    properties = emptyMap()
+                )
             )
         )
     )
@@ -306,6 +330,79 @@ object TruckingTools {
                 }
             }
             
+            "findNearestSwiftTerminal" -> {
+                buildJsonObject {
+                    put("driver_location", "I-40 EB near Flagstaff, AZ")
+                    put("nearest_terminal", buildJsonObject {
+                        put("name", "Jurupa Valley Terminal")
+                        put("distance_miles", 385)
+                        put("address", "11200 San Sevaine Way, Jurupa Valley, CA 91752")
+                        put("amenities", buildJsonArray {
+                            add("Open Showers")
+                            add("Driver Lounge")
+                            add("Full-Service Maintenance Shop")
+                            add("Tractor/Trailer Wash")
+                            add("Secure Parking")
+                        })
+                    })
+                    put("alternative_drop_yard", buildJsonObject {
+                        put("name", "Phoenix Terminal")
+                        put("distance_miles", 145)
+                        put("address", "2200 S 75th Ave, Phoenix, AZ 85043")
+                        put("amenities", buildJsonArray {
+                            add("Driver Lounge")
+                            add("Maintenance Shop")
+                            add("Fuel Island")
+                        })
+                    })
+                }
+            }
+            
+            "checkInGaugeSafetyScore" -> {
+                buildJsonObject {
+                    put("driver_id", DEMO_DRIVER_ID)
+                    put("current_score", 94.5)
+                    put("status", "Green / Bonus Eligible")
+                    put("company_percentile", "Top 15%")
+                    put("recent_events", buildJsonArray {
+                        add(buildJsonObject {
+                            put("event_type", "Hard Braking")
+                            put("date", "2026-04-14")
+                            put("location", "I-40 near Kingman, AZ")
+                            put("severity", "Moderate")
+                            put("impact_on_score", "-1.5 pts")
+                        })
+                        add(buildJsonObject {
+                            put("event_type", "Overspeed (>5mph)")
+                            put("date", "2026-04-10")
+                            put("location", "US-93 near Wickenburg, AZ")
+                            put("severity", "Minor")
+                            put("impact_on_score", "-0.5 pts")
+                        })
+                    })
+                }
+            }
+            
+            "getFuelNetworkRouting" -> {
+                buildJsonObject {
+                    put("driver_id", DEMO_DRIVER_ID)
+                    put("current_fuel_level", "3/8 Tank")
+                    put("recommended_stop", buildJsonObject {
+                        put("brand", "Swift Fuel Network #AZ-17 / Pilot")
+                        put("location", "Flagstaff, AZ (Exit 195)")
+                        put("distance_miles", 12)
+                        put("fuel_discount", "High")
+                        put("amenities", buildJsonArray {
+                            add("DEF at Pump")
+                            add("Cat Scale")
+                            add("Showers")
+                            add("Restaurant")
+                        })
+                    })
+                    put("restriction_warning", "Do NOT fuel at Love's or independent stops on this corridor; use only Pilot/Flying J or Swift yards.")
+                }
+            }
+
             else -> throw IllegalArgumentException("Unknown tool: $name")
         }
     }
